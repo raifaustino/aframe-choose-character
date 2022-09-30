@@ -13,45 +13,42 @@
     <script type="text/javascript">
       AFRAME.registerComponent("handle-totoro", {
         init: function () {
-          var el = this.el; // handles events for the assets
+          var el = this.el;
           var audioTotoro = new Audio("assets/ost_totoro.mp3");
           audioTotoro.loop = true;
 
           el.addEventListener("mouseenter", function () {
+            audioTotoro.play();
             const fadeInTotoro = setInterval(() => {
-              audioTotoro.play();
-
-              audioTotoro.volume += 0.1;
-
+              if (audioTotoro.volume < 1) audioTotoro.volume += 0.1;
+              console.log(audioTotoro.volume);
               if (audioTotoro.volume > 0.9) {
                 clearInterval(fadeInTotoro);
               }
             }, 400);
             el.setAttribute("scale", { x: 0.5, y: 0.5, z: 0.5 });
-            // el.addState("selected");
           });
           el.addEventListener("mouseleave", function () {
             const fadeOutTotoro = setInterval(() => {
               audioTotoro.volume -= 0.1;
-
-              if (audioTotoro.volume < 0.003) {
+              console.log(audioTotoro.volume);
+              if (audioTotoro.volume < 0.2) {
                 audioTotoro.pause();
                 clearInterval(fadeOutTotoro);
               }
             }, 400);
 
             el.setAttribute("scale", { x: 0.25, y: 0.25, z: 0.25 });
-            // el.removeState("selected");
           });
           el.addEventListener("click", function () {
-            document.getElementById("skyId").style.color = "#FFFFFF";
+            console.log("totoro");
           });
         },
       });
 
       AFRAME.registerComponent("handle-diglett", {
         init: function () {
-          var el = this.el; // handles events for the assets
+          var el = this.el;
 
           var audioDiglett = new Audio("assets/ost_diglett.mp3");
           audioDiglett.loop = true;
@@ -67,7 +64,6 @@
             }, 400);
 
             el.setAttribute("scale", { x: 2, y: 2, z: 2 });
-            // el.addState("selected");
           });
           el.addEventListener("mouseleave", function () {
             const fadeOutDiglett = setInterval(() => {
@@ -79,7 +75,6 @@
               }
             }, 400);
             el.setAttribute("scale", { x: 1, y: 1, z: 1 });
-            // el.removeState("selected");
           });
           el.addEventListener("click", function () {
             console.log("diglett");
@@ -89,7 +84,7 @@
 
       AFRAME.registerComponent("handle-basketball", {
         init: function () {
-          var el = this.el; // handles events for the assets
+          var el = this.el;
 
           var audioBasketball = new Audio("assets/ost_basketball.mp3");
           audioBasketball.loop = true;
@@ -107,7 +102,6 @@
             }, 400);
 
             el.setAttribute("scale", { x: 3, y: 3, z: 3 });
-            // el.addState("selected");
           });
           el.addEventListener("mouseleave", function () {
             const fadeOutBasketball = setInterval(() => {
@@ -119,7 +113,6 @@
               }
             }, 400);
             el.setAttribute("scale", { x: 2, y: 2, z: 2 });
-            // el.removeState("selected");
           });
           el.addEventListener("click", function () {
             console.log("basket");
@@ -129,7 +122,7 @@
 
       AFRAME.registerComponent("handle-spongebob", {
         init: function () {
-          var el = this.el; // handles events for the assets
+          var el = this.el;
           var audioSpongebob = new Audio("assets/ost_spongebob.mp3");
           audioSpongebob.loop = true;
           el.addEventListener("mouseenter", function () {
@@ -146,7 +139,6 @@
             }, 400);
 
             el.setAttribute("scale", { x: 0.25, y: 0.25, z: 0.25 });
-            // el.addState("selected");
           });
           el.addEventListener("mouseleave", function () {
             const fadeOutSpongebob = setInterval(() => {
@@ -158,12 +150,15 @@
               }
             }, 400);
             el.setAttribute("scale", { x: 0.15, y: 0.15, z: 0.15 });
-            // el.removeState("selected");
           });
           el.addEventListener("click", function () {
             console.log("spongebob");
           });
         },
+      });
+
+      AFRAME.registerComponent("sky-color", {
+        schema: { type: "color", default: "#333333" },
       });
     </script>
 
@@ -180,14 +175,8 @@
           src="assets/spongebob.glb"
         ></a-asset-item>
       </a-assets>
-
-      <a-sky id="skyId" color="#333333"></a-sky>
-
-      <!-- <a-entity id="rig" position="25 10 0">
-        <a-entity id="camera" camera look-controls></a-entity>
-      </a-entity> -->
-
-      <!-- <a-entity camera look-controls position="0 1.83 0"></a-entity> -->
+      <a-box sky-color position="0 0 -5"></a-box>
+      <a-sky color="#333333"></a-sky>
 
       <a-camera position="0 1.6 0"> <a-cursor></a-cursor> </a-camera>
 
@@ -218,6 +207,7 @@
       ></a-plane>
 
       <!-- bonecos -->
+
       <a-entity
         id="totoro"
         animation-mixer="timeScale:0"
@@ -225,6 +215,7 @@
         scale="0.25 0.25 0.25"
         position="0 0 -15"
         rotation="0 0 0"
+        animation__spin="property: rotation; from: 0 0 0 ;to: 0 359 0; loop: true; dur: 5000; easing: linear"
         handle-totoro
       >
       </a-entity>
@@ -247,6 +238,7 @@
         scale="2 2 2"
         position="-15 0 0"
         rotation="0 0 0"
+        animation__spin="property: rotation; from: 0 0 0 ;to: 0 359 0; loop: true; dur: 5000; easing: linear"
         handle-basketball
       >
       </a-entity>
@@ -257,9 +249,12 @@
         scale="0.2 0.2 0.2  "
         position="15 4 1"
         rotation="0 90 0"
+        animation__hover="property: position; from: 15 4 1 ;to: 15 4.1 1 ; loop: -1; dur: 1000; easing: linear; dir: alternate"
         handle-spongebob
       >
       </a-entity>
+
+      <a-text value=""></a-text>
       <!-- luzes -->
       <a-entity
         light="color: #FFF; intensity: 1"
