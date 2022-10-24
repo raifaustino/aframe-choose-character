@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link rel="stylesheet" href="styles.css" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=<device-width>, initial-scale=1.0" />
@@ -10,157 +11,8 @@
     <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
   </head>
   <body>
-    <script type="text/javascript">
-      AFRAME.registerComponent("handle-totoro", {
-        init: function () {
-          var el = this.el;
-          var audioTotoro = new Audio("assets/ost_totoro.mp3");
-          audioTotoro.loop = true;
-
-          el.addEventListener("mouseenter", function () {
-            audioTotoro.play();
-            const fadeInTotoro = setInterval(() => {
-              if (audioTotoro.volume < 1) audioTotoro.volume += 0.1;
-              console.log(audioTotoro.volume);
-              if (audioTotoro.volume > 0.9) {
-                clearInterval(fadeInTotoro);
-              }
-            }, 400);
-            el.setAttribute("scale", { x: 0.5, y: 0.5, z: 0.5 });
-          });
-          el.addEventListener("mouseleave", function () {
-            const fadeOutTotoro = setInterval(() => {
-              audioTotoro.volume -= 0.1;
-              console.log(audioTotoro.volume);
-              if (audioTotoro.volume < 0.2) {
-                audioTotoro.pause();
-                clearInterval(fadeOutTotoro);
-              }
-            }, 400);
-
-            el.setAttribute("scale", { x: 0.25, y: 0.25, z: 0.25 });
-          });
-          el.addEventListener("click", function () {
-            console.log("totoro");
-          });
-        },
-      });
-
-      AFRAME.registerComponent("handle-diglett", {
-        init: function () {
-          var el = this.el;
-
-          var audioDiglett = new Audio("assets/ost_diglett.mp3");
-          audioDiglett.loop = true;
-          el.addEventListener("mouseenter", function () {
-            const fadeInDiglett = setInterval(() => {
-              audioDiglett.play();
-
-              audioDiglett.volume += 0.1;
-
-              if (audioDiglett.volume > 0.9) {
-                clearInterval(fadeInDiglett);
-              }
-            }, 400);
-
-            el.setAttribute("scale", { x: 2, y: 2, z: 2 });
-          });
-          el.addEventListener("mouseleave", function () {
-            const fadeOutDiglett = setInterval(() => {
-              audioDiglett.volume -= 0.1;
-
-              if (audioDiglett.volume < 0.003) {
-                audioDiglett.pause();
-                clearInterval(fadeOutDiglett);
-              }
-            }, 400);
-            el.setAttribute("scale", { x: 1, y: 1, z: 1 });
-          });
-          el.addEventListener("click", function () {
-            console.log("diglett");
-          });
-        },
-      });
-
-      AFRAME.registerComponent("handle-basketball", {
-        init: function () {
-          var el = this.el;
-
-          var audioBasketball = new Audio("assets/ost_basketball.mp3");
-          audioBasketball.loop = true;
-          el.addEventListener("mouseenter", function () {
-            audioBasketball.play();
-
-            const fadeInBasketball = setInterval(() => {
-              audioBasketball.play();
-
-              audioBasketball.volume += 0.1;
-
-              if (audioBasketball.volume > 0.9) {
-                clearInterval(fadeInBasketball);
-              }
-            }, 400);
-
-            el.setAttribute("scale", { x: 3, y: 3, z: 3 });
-          });
-          el.addEventListener("mouseleave", function () {
-            const fadeOutBasketball = setInterval(() => {
-              audioBasketball.volume -= 0.1;
-
-              if (audioBasketball.volume < 0.003) {
-                audioBasketball.pause();
-                clearInterval(fadeOutBasketball);
-              }
-            }, 400);
-            el.setAttribute("scale", { x: 2, y: 2, z: 2 });
-          });
-          el.addEventListener("click", function () {
-            console.log("basket");
-          });
-        },
-      });
-
-      AFRAME.registerComponent("handle-spongebob", {
-        init: function () {
-          var el = this.el;
-          var audioSpongebob = new Audio("assets/ost_spongebob.mp3");
-          audioSpongebob.loop = true;
-          el.addEventListener("mouseenter", function () {
-            audioSpongebob.play();
-
-            const fadeInSpongebob = setInterval(() => {
-              audioSpongebob.play();
-
-              audioSpongebob.volume += 0.1;
-
-              if (audioSpongebob.volume > 0.9) {
-                clearInterval(fadeInSpongebob);
-              }
-            }, 400);
-
-            el.setAttribute("scale", { x: 0.25, y: 0.25, z: 0.25 });
-          });
-          el.addEventListener("mouseleave", function () {
-            const fadeOutSpongebob = setInterval(() => {
-              audioSpongebob.volume -= 0.1;
-
-              if (audioSpongebob.volume < 0.003) {
-                audioSpongebob.pause();
-                clearInterval(fadeOutSpongebob);
-              }
-            }, 400);
-            el.setAttribute("scale", { x: 0.15, y: 0.15, z: 0.15 });
-          });
-          el.addEventListener("click", function () {
-            console.log("spongebob");
-          });
-        },
-      });
-
-      AFRAME.registerComponent("sky-color", {
-        schema: { type: "color", default: "#333333" },
-      });
-    </script>
+    <script src="register-handles.js"></script>
+    <script src="sky-toggle-color.js"></script>
 
     <a-scene>
       <a-assets>
@@ -175,36 +27,16 @@
           src="assets/spongebob.glb"
         ></a-asset-item>
       </a-assets>
-      <a-box sky-color position="0 0 -5"></a-box>
-      <a-sky color="#333333"></a-sky>
+      <a-box position="0 0 -5"></a-box>
+      <a-sky id="sky" color="#333333" sky-toggle-color></a-sky>
 
-      <a-camera position="0 1.6 0"> <a-cursor></a-cursor> </a-camera>
+      <a-entity id="rig">
+        <a-camera position="0 1.6 0"> <a-cursor></a-cursor> </a-camera>
+      </a-entity>
 
-      <!-- PLANOS (chao) -->
-      <a-plane
-        position="0 0 -15"
-        rotation="-90 0 0"
-        width="10"
-        height="10"
-      ></a-plane>
-      <a-plane
-        position="0 0 15"
-        rotation="-90 0 0"
-        width="10"
-        height="10"
-      ></a-plane>
-      <a-plane
-        position="15 0 0"
-        rotation="-90 0 0"
-        width="10"
-        height="10"
-      ></a-plane>
-      <a-plane
-        position="-15 0 0"
-        rotation="-90 0 0"
-        width="10"
-        height="10"
-      ></a-plane>
+      <!-- PLANO (chao) -->
+      <a-plane position="0 0 0" rotation="-90 0 0" width="200" height="200">
+      </a-plane>
 
       <!-- bonecos -->
 
